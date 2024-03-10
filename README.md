@@ -24,7 +24,7 @@ You can deserialize a lot of inlined `JSON` files in one `JSON` file, like that:
 }
 ```
 
-Use `JsonCombiner` instead of `JsonSerializer` to deserialize JSON file from file system
+Use `JsonCombiner` instead of `JsonSerializer` to deserialize JSON file from file system and inherit each inlined class or struct from `IJsonCombine` interface
 ```csharp
 public TestObject LoadFromFile(string relativePath)
 {
