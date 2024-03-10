@@ -33,3 +33,5 @@
 
 # Visual Studio files & folders
 .vs
+[Bb]in
+[Oo]bj
