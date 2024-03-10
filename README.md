@@ -10,7 +10,7 @@ You can deserialize a lot of inlined `JSON` files in one `JSON` file, like that:
   "param2": 2,
   "param3": 3.3,
   "inner1": {
-    "include": "c/inner_object_1.json"
+    "include": "inline/inner_object_1.json"
   }
 }
 ```
