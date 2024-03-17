@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFrameworks>net5.0;net6.0;net7.0;net8.0</TargetFrameworks>
     <ApplicationIcon />
     <StartupObject />
     <Authors>Pavel "am1goo" Shestakov</Authors>
@@ -19,6 +19,8 @@
     <PackageId>am1goo.System.Text.Json.Combiner</PackageId>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
     <Company>Pavel "am1goo" Shestakov</Company>
+    <Version>1.0.1</Version>
+    <Copyright>Pavel "am1goo" Shestakov</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
