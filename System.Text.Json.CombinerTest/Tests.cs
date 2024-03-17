@@ -14,7 +14,6 @@ namespace System.Text.Json.CombinerTest
         [Test]
         public void TestDeserialization()
         {
-            System.Console.WriteLine("yobaa");
             var options = new JsonSerializerOptions
             {
                 IncludeFields = true,

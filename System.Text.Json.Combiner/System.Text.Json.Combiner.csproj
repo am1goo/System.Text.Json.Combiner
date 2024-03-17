@@ -5,6 +5,23 @@
     <TargetFramework>net5.0</TargetFramework>
     <ApplicationIcon />
     <StartupObject />
+    <Authors>Pavel "am1goo" Shestakov</Authors>
+    <Product>System.Text.Json.Combiner</Product>
+    <Description>Easiest way to inline one JSON file to another one</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/am1goo/System.Text.Json.Combiner</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/am1goo/System.Text.Json.Combiner</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReleaseNotes />
+    <PackageTags>json, inline, system, csharp, dotnet, text, serialization, deserialization</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageId>am1goo.System.Text.Json.Combiner</PackageId>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+    <Company>Pavel "am1goo" Shestakov</Company>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 </Project>
