@@ -3,9 +3,9 @@
 	"param2": 2,
 	"param3": 3.3,
 	"inner1": {
-		"include": "Inner/inner_object_1.json"
+		"include": "file://inner/inner_object_1.json"
 	},
 	"inner2": {
-		"include": "Inner/inner_object_2.json"
+		"include": "inner/inner_object_2.json"
 	}
 }

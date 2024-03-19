@@ -23,26 +23,34 @@ namespace System.Text.Json.Combiner.Serialization
         public override IJsonCombine Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             var backup = reader;
-            if (!TryGetObjectAsPath(ref reader, _cwd, out var path))
+            if (!TryGetObjectAsPath(ref reader, _cwd, out var uri))
             {
                 var o = JsonCombiner.CreateOptions(options, null);
                 o.Converters.RemoveIfNeed(typeof(JsonCombineConverter));
                 return (IJsonCombine)JsonSerializer.Deserialize(ref backup, typeToConvert, o);
             }
 
-            var fi = new FileInfo(path);
-            using (var fs = fi.OpenRead())
+            switch (uri.Scheme)
             {
-                using (var sr = new StreamReader(fs))
-                {
-                    var json = sr.ReadToEnd();
+                case "file":
+                    var uriPath = uri.GetFilePath();
+                    var fi = new FileInfo(uriPath);
+                    using (var fs = fi.OpenRead())
+                    {
+                        using (var sr = new StreamReader(fs))
+                        {
+                            var json = sr.ReadToEnd();
 
-                    var cwd = fi.DirectoryName;
-                    var c = new JsonCombineConverter(cwd);
-                    var o = JsonCombiner.CreateOptions(options, c);
-                    var obj = (IJsonCombine)JsonSerializer.Deserialize(json, typeToConvert, o);
-                    return obj;
-                }
+                            var cwd = fi.DirectoryName;
+                            var c = new JsonCombineConverter(cwd);
+                            var o = JsonCombiner.CreateOptions(options, c);
+                            var obj = (IJsonCombine)JsonSerializer.Deserialize(json, typeToConvert, o);
+                            return obj;
+                        }
+                    }
+
+                default:
+                    return null;
             }
         }
 
@@ -50,9 +58,9 @@ namespace System.Text.Json.Combiner.Serialization
         {
         }
 
-        private static bool TryGetObjectAsPath(ref Utf8JsonReader reader, string cwd, out string path)
+        private static bool TryGetObjectAsPath(ref Utf8JsonReader reader, string cwd, out Uri result)
         {
-            path = null;
+            result = null;
             var canRead = true;
             while (canRead && reader.Read())
             {
@@ -65,8 +73,11 @@ namespace System.Text.Json.Combiner.Serialization
                         {
                             if (reader.Read())
                             {
-                                path = reader.GetString();
-                                path = FixPath(path, cwd);
+                                var path = reader.GetString();
+                                if (TryParsePath(path, cwd, out var uri))
+                                {
+                                    result = uri;
+                                }
                             }
                         }
                         break;
@@ -76,17 +87,26 @@ namespace System.Text.Json.Combiner.Serialization
                         break;
                 }
             }
-            return !string.IsNullOrWhiteSpace(path);
+            return result != null;
         }
 
-        private static string FixPath(string path, string cwd)
+        private static bool TryParsePath(string path, string cwd, out Uri result)
         {
-            if (!Path.IsPathRooted(path))
-                path = Path.Combine(cwd, path);
+            if (!path.StartsWith("file://"))
+                path = $"file://{path}";
 
-            var pathSeparator = Path.DirectorySeparatorChar;
-            var oppositeSeparator = pathSeparator == '\\' ? '/' : '\\';
-            return path.Replace(oppositeSeparator, pathSeparator);
+            if (!Uri.TryCreate(path, UriKind.RelativeOrAbsolute, out var uri))
+            {
+                result = default;
+                return false;
+            }
+
+            var uriPath = uri.GetFilePath();
+            if (!Path.IsPathRooted(uriPath))
+                uriPath = Path.Combine(cwd, uriPath);
+
+            result = new Uri($"{uri.Scheme}://{uriPath}");
+            return true;
         }
     }
 }
