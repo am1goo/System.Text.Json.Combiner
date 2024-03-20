@@ -7,5 +7,8 @@
 	},
 	"inner2": {
 		"include": "inner/inner_object_2.json"
+	},
+	"innerArray": {
+		"include": "inner/inner_array.json"
 	}
 }

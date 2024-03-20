@@ -40,6 +40,10 @@ namespace System.Text.Json.CombinerTest
             Assert.AreEqual(inner2.arg1, "arg11");
             Assert.AreEqual(inner2.arg2, 222);
             Assert.AreEqual(inner2.arg3, 333.333f);
+
+            var innerArray = obj.innerArray;
+            Assert.IsNotNull(innerArray);
+            Assert.AreEqual(innerArray.Length, 2);
         }
 
         public class TestObject
@@ -49,6 +53,7 @@ namespace System.Text.Json.CombinerTest
             public float param3;
             public InnerObject inner1;
             public InnerObject inner2;
+            public InnerObject[] innerArray;
 
             public class InnerObject : IJsonCombine
             {

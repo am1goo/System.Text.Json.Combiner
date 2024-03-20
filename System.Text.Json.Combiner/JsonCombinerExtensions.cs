@@ -23,6 +23,17 @@ namespace System.Text.Json.Combiner
             }
         }
 
+        public static void AddIfNeed(this IList<JsonConverter> list, params JsonConverter[] converters)
+        {
+            if (converters == null)
+                return;
+
+            foreach (var converter in converters)
+            {
+                AddIfNeed(list, converter);
+            }
+        }
+
         public static void AddIfNeed(this IList<JsonConverter> list, JsonConverter converter)
         {
             if (converter == null)

@@ -15,7 +15,7 @@
     <PackageReleaseNotes />
     <PackageTags>json, inline, system, csharp, dotnet, text, serialization, deserialization</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageId>am1goo.System.Text.Json.Combiner</PackageId>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
     <Company>Pavel "am1goo" Shestakov</Company>
