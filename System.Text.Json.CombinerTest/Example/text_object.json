@@ -2,13 +2,9 @@
 	"param1": "param1",
 	"param2": 2,
 	"param3": 3.3,
-	"inner1": {
-		"include": "file://inner/inner_object_1.json"
-	},
+	"inner1": "file://inner/inner_object_1.json",
 	"inner2": {
 		"include": "inner/inner_object_2.json"
 	},
-	"innerArray": {
-		"include": "inner/inner_array.json"
-	}
+	"innerArray": "inner/inner_array.json"
 }

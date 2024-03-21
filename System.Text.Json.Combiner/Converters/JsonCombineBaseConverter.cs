@@ -64,30 +64,45 @@ namespace System.Text.Json.Combiner.Serialization
         {
             result = null;
             var canRead = true;
-            while (canRead && reader.Read())
+            do
             {
                 switch (reader.TokenType)
                 {
-                    case JsonTokenType.PropertyName:
-                        var propertyName = reader.GetString();
-                        if (string.Equals(propertyName, "include", StringComparison.InvariantCultureIgnoreCase))
+                    case JsonTokenType.String:
                         {
-                            if (reader.Read())
+                            var path = reader.GetString();
+                            if (TryParsePath(path, cwd, out var uri))
                             {
-                                var path = reader.GetString();
-                                if (TryParsePath(path, cwd, out var uri))
+                                result = uri;
+                            }
+                            canRead = false;
+                            break;
+                        }
+
+                    case JsonTokenType.PropertyName:
+                        {
+                            var propertyName = reader.GetString();
+                            if (string.Equals(propertyName, "include", StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                if (reader.Read())
                                 {
-                                    result = uri;
+                                    var path = reader.GetString();
+                                    if (TryParsePath(path, cwd, out var uri))
+                                    {
+                                        result = uri;
+                                    }
                                 }
                             }
+                            break;
                         }
-                        break;
 
                     case JsonTokenType.EndObject:
                         canRead = false;
                         break;
                 }
             }
+            while (canRead && reader.Read());
+
             return result != null;
         }
 
