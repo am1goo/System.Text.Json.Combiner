@@ -1,10 +1,19 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace System.Text.Json.Combiner.Serialization
 {
     public abstract class JsonCombineBaseConverter<T> : JsonConverter<T>
     {
+        private static Dictionary<string, IJsonLoader> _loaders = new Dictionary<string, IJsonLoader>
+        {
+            { "file", new FileJsonLoader() },
+            { "http", new HttpJsonLoader() },
+            { "https", new HttpJsonLoader() },
+        };
+
         protected abstract Type interfaceType { get; }
 
         private string _cwd;
@@ -22,37 +31,24 @@ namespace System.Text.Json.Combiner.Serialization
 
         public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
+            var o = JsonCombiner.CreateOptions(options);
+            o.Converters.RemoveIfNeed(typeof(JsonCombineConverter));
+            o.Converters.RemoveIfNeed(typeof(JsonCombineArrayConverter));
+
             var backup = reader;
-            if (!TryGetObjectAsPath(ref reader, _cwd, out var uri))
+            if (TryGetObjectAsPath(ref reader, _cwd, out var uri))
             {
-                var o = JsonCombiner.CreateOptions(options, null);
-                o.Converters.RemoveIfNeed(typeof(JsonCombineConverter));
-                o.Converters.RemoveIfNeed(typeof(JsonCombineArrayConverter));
-                return (T)JsonSerializer.Deserialize(ref backup, typeToConvert, o);
+                if (!_loaders.TryGetValue(uri.Scheme, out var loader))
+                    throw new Exception($"unsupported scheme {uri.Scheme}");
+                
+                var json = loader.Load(uri);
+                var obj = (T)JsonSerializer.Deserialize(json, typeToConvert, o);
+                return obj;
             }
-
-            switch (uri.Scheme)
+            else
             {
-                case "file":
-                    var uriPath = uri.GetFilePath();
-                    var fi = new FileInfo(uriPath);
-                    using (var fs = fi.OpenRead())
-                    {
-                        using (var sr = new StreamReader(fs))
-                        {
-                            var json = sr.ReadToEnd();
-
-                            var cwd = fi.DirectoryName;
-                            var o = JsonCombiner.CreateOptions(options);
-                            o.Converters.RemoveIfNeed(typeof(JsonCombineConverter));
-                            o.Converters.RemoveIfNeed(typeof(JsonCombineArrayConverter));
-                            var obj = (T)JsonSerializer.Deserialize(json, typeToConvert, o);
-                            return obj;
-                        }
-                    }
-
-                default:
-                    return default;
+                var obj = (T)JsonSerializer.Deserialize(ref backup, typeToConvert, o);
+                return obj;
             }
         }
 
@@ -106,7 +102,25 @@ namespace System.Text.Json.Combiner.Serialization
             return result != null;
         }
 
-        private static bool TryParsePath(string path, string cwd, out Uri result)
+        private static bool TryParsePath(string parsed, string cwd, out Uri result)
+        {
+            if (Uri.TryCreate(parsed, UriKind.Absolute, out result))
+            {
+                switch (result.Scheme)
+                {
+                    case "file":
+                        return TryParseFileUri(result, cwd, out result);
+                    default:
+                        return true;
+                }
+            }
+            else
+            {
+                return TryParseFileUri(parsed, cwd, out result);
+            }
+        }
+
+        private static bool TryParseFileUri(string path, string cwd, out Uri result)
         {
             if (!path.StartsWith("file://"))
                 path = $"file://{path}";
@@ -117,6 +131,11 @@ namespace System.Text.Json.Combiner.Serialization
                 return false;
             }
 
+            return TryParseFileUri(uri, cwd, out result);
+        }
+
+        private static bool TryParseFileUri(Uri uri, string cwd, out Uri result)
+        {
             var uriPath = uri.GetFilePath();
             if (!Path.IsPathRooted(uriPath))
                 uriPath = Path.Combine(cwd, uriPath);

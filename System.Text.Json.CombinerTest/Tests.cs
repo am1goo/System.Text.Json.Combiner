@@ -54,6 +54,7 @@ namespace System.Text.Json.CombinerTest
             public InnerObject inner1;
             public InnerObject inner2;
             public InnerObject[] innerArray;
+            public InnerObject extern1;
 
             public class InnerObject : IJsonCombine
             {

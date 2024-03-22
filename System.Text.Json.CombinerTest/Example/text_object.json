@@ -6,5 +6,6 @@
 	"inner2": {
 		"include": "inner/inner_object_2.json"
 	},
-	"innerArray": "inner/inner_array.json"
+	"innerArray": "inner/inner_array.json",
+	"extern1": "https://reqbin.com/echo/get/json"
 }
