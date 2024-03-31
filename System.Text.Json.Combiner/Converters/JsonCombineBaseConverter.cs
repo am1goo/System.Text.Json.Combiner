@@ -1,19 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace System.Text.Json.Combiner.Serialization
 {
     public abstract class JsonCombineBaseConverter<T> : JsonConverter<T>
     {
-        private static Dictionary<string, IJsonLoader> _loaders = new Dictionary<string, IJsonLoader>
-        {
-            { "file", new FileJsonLoader() },
-            { "http", new HttpJsonLoader() },
-            { "https", new HttpJsonLoader() },
-        };
-
         protected abstract Type interfaceType { get; }
 
         private string _cwd;
@@ -38,7 +30,7 @@ namespace System.Text.Json.Combiner.Serialization
             var backup = reader;
             if (TryGetObjectAsPath(ref reader, _cwd, out var uri))
             {
-                if (!_loaders.TryGetValue(uri.Scheme, out var loader))
+                if (!JsonCombiner.loaders.TryGetValue(uri.Scheme, out var loader))
                     throw new Exception($"unsupported scheme {uri.Scheme}");
                 
                 var json = loader.Load(uri);

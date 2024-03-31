@@ -7,19 +7,21 @@
     <StartupObject />
     <Authors>Pavel "am1goo" Shestakov</Authors>
     <Product>System.Text.Json.Combiner</Product>
-    <Description>Easiest way to inline one JSON file to another one</Description>
+    <Description>Easiest way to inline one JSON file to another one.
+Supports local (file://) and remote (http:// and https://) files.
+Extendable and open-source.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/am1goo/System.Text.Json.Combiner</PackageProjectUrl>
     <RepositoryUrl>https://github.com/am1goo/System.Text.Json.Combiner</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReleaseNotes />
-    <PackageTags>json, inline, system, csharp, dotnet, text, serialization, deserialization</PackageTags>
+    <PackageTags>json, inline, system, csharp, dotnet, text, serialization, deserialization, web, include</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageId>am1goo.System.Text.Json.Combiner</PackageId>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
     <Company>Pavel "am1goo" Shestakov</Company>
-    <Version>1.0.5</Version>
+    <Version>1.0.6</Version>
     <Copyright>Pavel "am1goo" Shestakov</Copyright>
   </PropertyGroup>
 

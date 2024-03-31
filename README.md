@@ -5,7 +5,12 @@
 # System.Text.Json.Combiner
 
 #### How it works
-You can deserialize a lot of inlined `JSON` files in one `JSON` file, like that:
+You can deserialize a lot of inlined `JSON` files in one `JSON` file from different sources (local or remote files), like that:
+
+#### Supported schemes
+- [x] file://
+- [x] http://
+- [x] https://
 
 *Root file:*
 ```json
@@ -14,7 +19,8 @@ You can deserialize a lot of inlined `JSON` files in one `JSON` file, like that:
   "param2": 2,
   "param3": 3.3,
   "inner1": "file://inline/inner_object_1.json",
-  "inner2": "inline/inner_object_2.json"
+  "inner2": "inline/inner_object_2.json",
+  "inner3": "http://any.public.host.xyz/json.file.json"
 }
 ```
 
@@ -42,5 +48,14 @@ public TestObject LoadFromFile(string relativePath)
 {
   string path = Path.Combine(Environment.CurrentDirectory, relativePath);
   return JsonCombiner.Deserialize<TestObject>(path, options);
+}
+```
+
+Also you can able to make your own json `IJsonLoader` variant and register it via `JsonCombiner.RegisterLoader` method.
+```csharp
+private void Main(string[] args)
+{
+	var myLoader = new MyJsonLoader();
+	JsonCombiner.RegisterLoader("myhttp", myLoader);
 }
 ```
