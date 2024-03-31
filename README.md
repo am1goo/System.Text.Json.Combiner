@@ -4,14 +4,34 @@
 
 # System.Text.Json.Combiner
 
-#### How it works
+#### What is this:
 You can deserialize a lot of inlined `JSON` files in one `JSON` file from different sources (local or remote files), like that:
 
-#### Supported schemes
-- [x] file://
-- [x] http://
-- [x] https://
+#### Supported schemes:
+- `file://` to load file from system
+- `http://` and `https://` to load files from web servers
 
+#### How it can be used:
+
+Use `JsonCombiner` instead of `JsonSerializer` to deserialize JSON file from file system and inherit each inlined class or struct from `IJsonCombine` interface
+```csharp
+public TestObject LoadFromFile(string relativePath)
+{
+  string path = Path.Combine(Environment.CurrentDirectory, relativePath);
+  return JsonCombiner.Deserialize<TestObject>(path, options);
+}
+```
+
+Also you can able to make your own json `IJsonLoader` variant and register it via `JsonCombiner.RegisterLoader` method.
+```csharp
+private void Main(string[] args)
+{
+  var myLoader = new MyJsonLoader();
+  JsonCombiner.RegisterLoader("myhttp", myLoader);
+}
+```
+
+#### Example:
 *Root file:*
 ```json
 {
@@ -39,23 +59,5 @@ You can deserialize a lot of inlined `JSON` files in one `JSON` file from differ
   "arg1": "arg2",
   "arg2": 66,
   "arg3": 77.77
-}
-```
-
-Use `JsonCombiner` instead of `JsonSerializer` to deserialize JSON file from file system and inherit each inlined class or struct from `IJsonCombine` interface
-```csharp
-public TestObject LoadFromFile(string relativePath)
-{
-  string path = Path.Combine(Environment.CurrentDirectory, relativePath);
-  return JsonCombiner.Deserialize<TestObject>(path, options);
-}
-```
-
-Also you can able to make your own json `IJsonLoader` variant and register it via `JsonCombiner.RegisterLoader` method.
-```csharp
-private void Main(string[] args)
-{
-	var myLoader = new MyJsonLoader();
-	JsonCombiner.RegisterLoader("myhttp", myLoader);
 }
 ```
