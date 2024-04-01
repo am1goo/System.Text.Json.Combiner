@@ -2,6 +2,10 @@
 <img alt="NuGet Version" src="https://img.shields.io/nuget/v/am1goo.System.Text.Json.Combiner">
 </a>
 
+<a href="https://www.nuget.org/packages/am1goo.System.Text.Json.Combiner" rel="nofollow">
+<img alt="NuGet Downloads" src="https://img.shields.io/nuget/dt/am1goo.System.Text.Json.Combiner">
+</a>
+
 # System.Text.Json.Combiner
 
 #### What is this:
