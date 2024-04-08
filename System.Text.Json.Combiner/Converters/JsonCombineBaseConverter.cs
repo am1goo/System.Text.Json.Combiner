@@ -24,7 +24,7 @@ namespace System.Text.Json.Combiner.Serialization
         public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             var o = JsonCombiner.CreateOptions(options);
-            o.Converters.RemoveIfNeed(typeof(JsonCombineConverter));
+            o.Converters.RemoveIfNeed(typeof(JsonCombineObjectConverter));
             o.Converters.RemoveIfNeed(typeof(JsonCombineArrayConverter));
 
             var backup = reader;

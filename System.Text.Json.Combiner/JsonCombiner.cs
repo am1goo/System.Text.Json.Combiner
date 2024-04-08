@@ -27,7 +27,7 @@ namespace System.Text.Json.Combiner
                     var json = sr.ReadToEnd();
 
                     var cwd = fi.DirectoryName;
-                    var c1 = new JsonCombineConverter(cwd);
+                    var c1 = new JsonCombineObjectConverter(cwd);
                     var c2 = new JsonCombineArrayConverter(cwd);
                     var o = CreateOptions(options, c1, c2);
                     return JsonSerializer.Deserialize<T>(json, o);
@@ -41,7 +41,7 @@ namespace System.Text.Json.Combiner
             using (var fs = fi.OpenRead())
             {
                 var cwd = fi.DirectoryName;
-                var c1 = new JsonCombineConverter(cwd);
+                var c1 = new JsonCombineObjectConverter(cwd);
                 var c2 = new JsonCombineArrayConverter(cwd);
                 var o = CreateOptions(options, c1, c2);
                 return await JsonSerializer.DeserializeAsync<T>(fs, o, cancellationToken);
