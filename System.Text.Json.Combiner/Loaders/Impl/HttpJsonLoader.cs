@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace System.Text.Json.Combiner
 {
@@ -13,7 +8,7 @@ namespace System.Text.Json.Combiner
     {
         private static readonly AssemblyName _assemblyName = typeof(JsonCombiner).Assembly.GetName();
 
-        public string Load(Uri uri)
+        public string Load(Uri uri, JsonLoaderContext ctx)
         {
             var client = new HttpClient(new HttpClientHandler
             {

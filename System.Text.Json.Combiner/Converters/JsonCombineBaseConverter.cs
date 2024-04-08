@@ -28,12 +28,16 @@ namespace System.Text.Json.Combiner.Serialization
             o.Converters.RemoveIfNeed(typeof(JsonCombineArrayConverter));
 
             var backup = reader;
-            if (TryGetObjectAsPath(ref reader, _cwd, out var uri))
+            if (TryGetObjectAsPath(ref reader, out var uri))
             {
                 if (!JsonCombiner.loaders.TryGetValue(uri.Scheme, out var loader))
                     throw new Exception($"unsupported scheme {uri.Scheme}");
-                
-                var json = loader.Load(uri);
+
+                var ctx = new JsonLoaderContext
+                {
+                    cwd = _cwd,
+                };
+                var json = loader.Load(uri, ctx);
                 var obj = (T)JsonSerializer.Deserialize(json, typeToConvert, o);
                 return obj;
             }
@@ -48,7 +52,7 @@ namespace System.Text.Json.Combiner.Serialization
         {
         }
 
-        private static bool TryGetObjectAsPath(ref Utf8JsonReader reader, string cwd, out Uri result)
+        private static bool TryGetObjectAsPath(ref Utf8JsonReader reader, out Uri result)
         {
             result = null;
             var canRead = true;
@@ -59,10 +63,7 @@ namespace System.Text.Json.Combiner.Serialization
                     case JsonTokenType.String:
                         {
                             var path = reader.GetString();
-                            if (TryParsePath(path, cwd, out var uri))
-                            {
-                                result = uri;
-                            }
+                            result = CreateUri(path);
                             canRead = false;
                             break;
                         }
@@ -75,10 +76,7 @@ namespace System.Text.Json.Combiner.Serialization
                                 if (reader.Read())
                                 {
                                     var path = reader.GetString();
-                                    if (TryParsePath(path, cwd, out var uri))
-                                    {
-                                        result = uri;
-                                    }
+                                    result = CreateUri(path);
                                 }
                             }
                             break;
@@ -94,46 +92,16 @@ namespace System.Text.Json.Combiner.Serialization
             return result != null;
         }
 
-        private static bool TryParsePath(string parsed, string cwd, out Uri result)
+        private static Uri CreateUri(string parsed)
         {
-            if (Uri.TryCreate(parsed, UriKind.Absolute, out result))
+            if (Uri.TryCreate(parsed, UriKind.Absolute, out var result))
             {
-                switch (result.Scheme)
-                {
-                    case "file":
-                        return TryParseFileUri(result, cwd, out result);
-                    default:
-                        return true;
-                }
+                return result;
             }
             else
             {
-                return TryParseFileUri(parsed, cwd, out result);
+                return new Uri($"file://{parsed}");
             }
-        }
-
-        private static bool TryParseFileUri(string path, string cwd, out Uri result)
-        {
-            if (!path.StartsWith("file://"))
-                path = $"file://{path}";
-
-            if (!Uri.TryCreate(path, UriKind.RelativeOrAbsolute, out var uri))
-            {
-                result = default;
-                return false;
-            }
-
-            return TryParseFileUri(uri, cwd, out result);
-        }
-
-        private static bool TryParseFileUri(Uri uri, string cwd, out Uri result)
-        {
-            var uriPath = uri.GetFilePath();
-            if (!Path.IsPathRooted(uriPath))
-                uriPath = Path.Combine(cwd, uriPath);
-
-            result = new Uri($"{uri.Scheme}://{uriPath}");
-            return true;
         }
     }
 }

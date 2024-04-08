@@ -2,6 +2,6 @@
 {
     public interface IJsonLoader
     {
-        string Load(Uri uri);
+        string Load(Uri uri, JsonLoaderContext ctx);
     }
 }
