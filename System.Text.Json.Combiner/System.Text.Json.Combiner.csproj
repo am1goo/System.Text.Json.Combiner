@@ -21,7 +21,7 @@ Extendable and open-source.</Description>
     <PackageId>am1goo.System.Text.Json.Combiner</PackageId>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
     <Company>Pavel "am1goo" Shestakov</Company>
-    <Version>1.0.6</Version>
+    <Version>1.0.7</Version>
     <Copyright>Pavel "am1goo" Shestakov</Copyright>
   </PropertyGroup>
 
