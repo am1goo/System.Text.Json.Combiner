@@ -1,3 +1,7 @@
+![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/am1goo/System.Text.Json.Combiner)
+![GitHub Issues or Pull Requests](https://img.shields.io/github/issues-pr/am1goo/System.Text.Json.Combiner)
+![GitHub License](https://img.shields.io/github/license/am1goo/System.Text.Json.Combiner)
+
 <a href="https://www.nuget.org/packages/am1goo.System.Text.Json.Combiner" rel="nofollow">
 <img alt="NuGet Version" src="https://img.shields.io/nuget/v/am1goo.System.Text.Json.Combiner">
 </a>
